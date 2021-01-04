@@ -1,22 +1,29 @@
-##################### Hard Starting Project ######################
+##################### Extra Hard Starting Project ######################
 
-# 1. Update the birthdays.csv with your friends & family's details. 
-# HINT: Make sure one of the entries matches today's date for testing purposes. 
+# 1. Update the birthdays.csv
 
 # 2. Check if today matches a birthday in the birthdays.csv
-# HINT 1: Only the month and day matter. 
-# HINT 2: You could create a dictionary from birthdays.csv that looks like this:
-# birthdays_dict = {
-#     (month, day): data_row
-# }
-#HINT 3: Then you could compare and see if today's month/day matches one of the keys in birthday_dict like this:
-# if (today_month, today_day) in birthdays_dict:
 
 # 3. If step 2 is true, pick a random letter from letter templates and replace the [NAME] with the person's actual name from birthdays.csv
-# HINT: https://www.w3schools.com/python/ref_string_replace.asp
 
 # 4. Send the letter generated in step 3 to that person's email address.
-# HINT: Gmail(smtp.gmail.com), Yahoo(smtp.mail.yahoo.com), Hotmail(smtp.live.com), Outlook(smtp-mail.outlook.com)
 
+import pandas as pds
+import datetime as dt
+from smtplib import SMTP
+from random import randint
+file = open('file.txt', 'r')
+email = file.readlines()[0].strip('\n')
+password = open('file.txt', 'r').readlines()[1]
+file.close()
+data = pds.read_csv('birthdays.csv').to_dict(orient='records')
 
+with SMTP("smtp.gmail.com") as connection:
+  connection.starttls()
+  connection.login(user=email, password=password)
+  if dt.datetime.now().day == data[0]['day']:
+      with open(f'letter_templates/letter_{randint(1, 3)}.txt') as file:
+        letter_content = file.read().replace('[NAME]', data[0]['name'])
+        connection.sendmail(from_addr=email, to_addrs=data[0]['email'], msg=f"""Subject:Happy Birthday, {data[0]['name']}!\n\n 
+{letter_content}""")
 
