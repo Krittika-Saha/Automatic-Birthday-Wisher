@@ -17,13 +17,14 @@ email = file.readlines()[0].strip('\n')
 password = open('file.txt', 'r').readlines()[1]
 file.close()
 data = pds.read_csv('birthdays.csv').to_dict(orient='records')
-
+print(data)
 with SMTP("smtp.gmail.com") as connection:
   connection.starttls()
   connection.login(user=email, password=password)
-  if dt.datetime.now().day == data[0]['day']:
-      with open(f'letter_templates/letter_{randint(1, 3)}.txt') as file:
-        letter_content = file.read().replace('[NAME]', data[0]['name'])
-        connection.sendmail(from_addr=email, to_addrs=data[0]['email'], msg=f"""Subject:Happy Birthday, {data[0]['name']}!\n\n 
-{letter_content}""")
+  for i in data:
+    if dt.datetime.now().day == data[i]['day']:
+        with open(f'letter_templates/letter_{randint(1, 3)}.txt') as file:
+          letter_content = file.read().replace('[NAME]', data[i]['name'])
+          connection.sendmail(from_addr=email, to_addrs=data[i]['email'], msg=f"""Subject:Happy Birthday, {data[i]['name']}!\n\n
+  {letter_content}""")
 

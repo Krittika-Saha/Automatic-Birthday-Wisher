@@ -1,2 +1,2 @@
 name,email,year,month,day
-Star,{your email here},2009,7,21
+Star,{your email here},{year},{month},{day}
